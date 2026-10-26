@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VITAL SIGNS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kirang+Haerang&family=Noto+Sans+KR:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
+:root{--bg:#0b1a1d;--panel:#122a2d;--panel2:#213e40;--line:#42635d;--text:#e0f1e9;--muted:#a2bdb5;--accent:#8dedb0;--bright:#d4ffb4;--alert:#ed977e}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Oswald','Noto Sans KR',sans-serif}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:30;background:repeating-linear-gradient(0deg,transparent 0 4px,#d4ffb402 5px)}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--bright);outline-offset:3px}
+.app{min-height:100vh;padding:25px 30px;display:flex;flex-direction:column;gap:18px;background:radial-gradient(ellipse at 50% 45%,#173331 0%,var(--bg) 70%)}
+.topbar,.footer{display:flex;justify-content:space-between;align-items:center;gap:15px;color:var(--muted);font:11px 'Oswald',sans-serif;letter-spacing:.14em}
+.topbar{border-bottom:1px solid var(--line);padding-bottom:15px}.footer{border-top:1px solid var(--line);padding-top:15px}
+.brand{color:var(--accent);font-weight:bold}.dot{display:inline-block;width:7px;height:7px;background:var(--accent);border-radius:50%;box-shadow:0 0 8px var(--accent);margin-right:8px;animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.3}}
+main{flex:1;min-height:0}
+.start-grid{display:grid;grid-template-columns:minmax(230px,1fr) minmax(350px,1.65fr) minmax(230px,1fr);gap:18px;min-height:calc(100vh - 145px)}
+.panel{position:relative;border:2px solid var(--line);background:#102628b5;padding:22px}
+.panel:before,.panel:after{content:"";position:absolute;width:14px;height:14px;border:solid var(--accent);pointer-events:none}
+.panel:before{top:-2px;left:-2px;border-width:3px 0 0 3px}
+.panel:after{bottom:-2px;right:-2px;border-width:0 3px 3px 0}
+.eyebrow{font:11px 'Oswald',sans-serif;letter-spacing:.18em;color:var(--accent)}
+h2{font-size:15px;letter-spacing:.1em}
+.profiles{display:grid;grid-template-rows:1fr 1fr;gap:16px}
+.profile{width:100%;text-align:left;display:flex;flex-direction:column;gap:9px;overflow:hidden;min-height:220px;background:#142f30;border:2px solid var(--line);color:var(--text);padding:14px;transition:background .2s,border-color .2s}
+.profile:hover{background:#25463f;border-color:var(--accent)}
+.profile-image{flex:1;min-height:120px;position:relative;background:linear-gradient(135deg,#29483f,#0c2022);display:grid;place-items:center;overflow:hidden}
+.profile-image img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.profile-image .placeholder{font:12px 'Oswald',sans-serif;color:var(--muted)}
+.profile-image:has(img:not([hidden])) .placeholder{display:none}
+.profile-name{display:flex;justify-content:space-between;align-items:center;font:12px 'Oswald',sans-serif;letter-spacing:.14em;color:var(--accent)}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.cross{font-size:25px;color:var(--accent)}.hero-small{font:11px 'Oswald',sans-serif;letter-spacing:.23em;color:var(--accent)}
+.logo-area{width:min(90%,530px);height:190px;display:grid;place-items:center}
+.logo-area img{max-width:100%;max-height:100%;object-fit:contain}
+.logo-fallback{font-size:clamp(48px,5vw,86px);line-height:1.03;letter-spacing:-.06em;font-weight:700}
+.subtitle{font:12px 'Oswald',sans-serif;letter-spacing:.25em;color:var(--accent)}
+.hero-desc{font:13px/1.9 'Noto Sans KR',sans-serif;color:var(--muted);margin:18px 0 3px}
+.btn{border:2px solid var(--accent);color:var(--accent);background:transparent;padding:15px 24px;letter-spacing:.12em;transition:background .2s,color .2s,box-shadow .2s}
+.btn:hover{background:var(--accent);color:var(--bg);box-shadow:0 0 16px #8dedb03d}
+.start-btn{min-width:230px;font-size:16px;font-weight:bold}
+.hint{font:10px 'Oswald',sans-serif;color:var(--muted);letter-spacing:.12em}
+.monitor{border:2px solid var(--line);background:#0a1d1e;padding:14px 9px;margin:24px 0 5px}
+.monitor svg{width:100%;height:150px}
+.gridline{stroke:#315249;stroke-width:.6}
+.trace{fill:none;stroke:var(--accent);stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #8dedb09c);stroke-dasharray:640;stroke-dashoffset:640;animation:draw 3.5s linear infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+.vitals{display:flex;justify-content:space-between;align-items:end}.number{font-size:52px;color:var(--accent);font-variant-numeric:tabular-nums}.vitals small{font:11px 'Oswald',sans-serif;color:var(--muted)}
+.divider{height:2px;background:var(--line);margin:24px 0}
+.record{display:flex;justify-content:space-between;gap:8px;padding:13px 0;border-bottom:2px solid #2a4a46;font:11px 'Oswald',sans-serif;color:var(--muted)}
+.record strong{font-weight:normal;color:var(--text)}
+.warning{color:var(--alert);font:11px/1.9 'Oswald',sans-serif;margin-top:26px}
+.archive-link{margin-top:24px;width:100%;font-size:12px}
+.hidden{display:none!important}
+.screen{position:relative;flex:1;min-height:calc(100vh - 145px)}
+.intro{display:grid;grid-template-columns:1.2fr 1fr;gap:35px;align-items:center;padding:5vw;isolation:isolate}
+.intro-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.intro:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0b1a1de8 0%,#0b1a1db8 56%,#0b1a1d78 100%);z-index:-1}
+.intro-content{max-width:650px}.intro h1{font-size:clamp(35px,4vw,70px);line-height:1.35;margin:22px 0}
+.intro h1,.intro p{white-space:pre-line}.intro p{font:clamp(14px,1.3vw,19px)/1.95 'Noto Sans KR',sans-serif}
+.intro-nav{display:flex;gap:16px;margin-top:42px}
+.arrow{min-width:68px;font-size:25px}
+.intro-art-hint{justify-self:center;color:var(--muted);font:12px 'Oswald',sans-serif;letter-spacing:.12em}
+.video-screen{position:fixed;inset:0;background:#071213;z-index:20}
+.video-screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.video-screen .video-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted)}
+.video-ui{position:absolute;left:0;right:0;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;background:linear-gradient(#071413b8,#07141300);pointer-events:none}
+.video-ui>*{pointer-events:auto}.video-ui.top{top:0}.video-ui.bottom{bottom:0;background:linear-gradient(transparent,#071413c9)}
+.home-btn{width:30px;height:30px;padding:5px;font-size:14px;display:grid;place-items:center;line-height:1;}
+.video-fallback{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#0b1a1dcc;padding:16px 20px;text-align:center;border:2px solid var(--line);max-width:90%}
+.choice-screen,.ending-screen,.archive-screen{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:32px;padding:60px 30px}
+.choice-screen.over-video{position:fixed;inset:0;z-index:21;min-height:100vh;background:#07141360;pointer-events:none}.choice-screen.over-video .btn{pointer-events:auto}.video-ui.top{z-index:23}.video-ui.bottom{z-index:22}.choice-screen h1{font-size:clamp(25px,3vw,48px);font-weight:600;line-height:1.6}
+.choice-buttons{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:min(850px,100%)}
+.choice-buttons .btn{min-height:95px;font:600 clamp(14px,1.5vw,22px) 'Noto Sans KR',sans-serif}
+.ending-screen h1{font-size:clamp(35px,4vw,68px);margin:0}
+.actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.archive-items{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:min(1000px,100%)}
+.archive-item{padding:30px 20px;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.archive-item h2{font-size:18px}
+.modal{position:fixed;inset:0;z-index:40;background:#04100fdc;display:grid;place-items:center;padding:20px}
+.modal-box{width:min(540px,100%);padding:35px;position:relative}
+.modal-box h2{font-size:24px}.modal-box p{font:15px/1.9 'Noto Sans KR',sans-serif;white-space:pre-line}
+.modal-close{position:absolute;right:12px;top:12px;padding:7px 12px}
+@media(max-width:1000px){.start-grid{grid-template-columns:1fr 1fr}.hero{grid-column:1/-1;grid-row:1;min-height:470px}.profiles{min-height:480px}.intro{grid-template-columns:1fr}.intro-art-hint{display:none}}
+@media(max-width:600px){.app{padding:14px;gap:12px}.topbar,.footer{font-size:9px}.start-grid{display:flex;flex-direction:column}.hero{order:-1;min-height:390px}.profiles{min-height:430px}.choice-buttons,.archive-items{grid-template-columns:1fr}.intro{padding:30px 18px}.logo-area{height:140px}}
+
+/* v5: choice text top, buttons bottom; keep center of video clear */
+.choice-screen{justify-content:space-between;gap:0;padding:clamp(100px,14vh,150px) 32px clamp(65px,11vh,125px)}
+.choice-screen h1{margin:0 auto;max-width:1100px;text-shadow:0 2px 16px #061613d9}
+.choice-screen .eyebrow{position:absolute;top:clamp(66px,10vh,105px);left:0;right:0;text-align:center}
+.choice-screen .choice-buttons{margin-top:auto}
+.choice-screen.over-video{justify-content:space-between;padding:clamp(100px,14vh,150px) 32px clamp(65px,11vh,125px)}
+.choice-screen.over-video .choice-buttons{pointer-events:auto}
+/* Home on non-video screens; existing video home remains at top right */
+#global-home{position:fixed;right:30px;top:76px;z-index:26;background:#0b1a1dcf;width:30px;height:30px;padding:5px;font-size:14px;display:grid;place-items:center;line-height:1;}
+.video-controls{position:absolute;z-index:24;right:28px;bottom:70px;display:flex;gap:6px}
+.icon-control{width:30px;height:30px;padding:5px;display:grid;place-items:center;background:#0b1a1db5}
+.icon-control svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:600px){#global-home{right:14px;top:62px}.video-controls{right:14px;bottom:14px}.choice-screen,.choice-screen.over-video{padding:115px 18px 70px}}
+
+/* v6: typeface changes requested; preserve v5 layout elsewhere */
+.intro h1{font-family:'Kirang Haerang','Noto Sans KR',sans-serif;font-weight:400}
+/* v6: ending-specific layout within existing header/footer frame */
+.ending-screen{position:relative;justify-content:space-between;align-items:stretch;gap:0;padding:30px clamp(22px,3.5vw,65px) 34px;background:linear-gradient(120deg,#07120f 0%,#0b1713 55%,#0d1a16 100%);min-height:calc(100vh - 145px)}
+.ending-heading{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:18px;width:100%;font:500 clamp(13px,1.2vw,20px) 'Oswald',sans-serif;letter-spacing:.055em;color:#9af3ce;text-align:left}
+.ending-branch{text-align:right}
+.ending-logo{width:clamp(110px,11vw,195px);height:66px;display:grid;place-items:start center}
+.ending-logo img{max-width:100%;max-height:100%;object-fit:contain}
+.ending-logo-fallback{font:600 22px 'Oswald',sans-serif;color:#9af3ce}
+.ending-title-area{margin-top:auto;margin-bottom:clamp(20px,3vh,35px);width:100%;text-align:left;color:#00dc9c}
+.ending-title-area .eyebrow{color:#00dc9c;font-size:clamp(15px,1.3vw,20px);font-weight:500;letter-spacing:.1em;margin-bottom:8px}
+.ending-title-area h1{font-family:'Kirang Haerang','Noto Sans KR',sans-serif;font-weight:400;font-size:clamp(55px,8.2vw,155px);line-height:1.07;letter-spacing:0;word-break:keep-all;color:#00dc9c;text-shadow:0 0 2px #00dc9c18}
+.ending-english{font:500 clamp(15px,1.5vw,24px) 'Oswald',sans-serif;letter-spacing:.14em;color:#00dc9c;margin-top:14px}
+.ending-actions{justify-content:flex-start;gap:12px;width:100%}
+.ending-actions .btn{font-size:13px;padding:12px 20px}
+@media(max-width:600px){.ending-screen{padding:26px 16px 24px}.ending-heading{gap:7px;font-size:11px}.ending-logo{width:90px;height:48px}.ending-title-area h1{font-size:clamp(49px,12vw,75px)}.ending-actions .btn{font-size:11px;padding:10px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<header class="topbar"><div class="brand">✚ &nbsp; V/S MEDICAL SYSTEM</div><div><span class="dot"></span> SYSTEM ONLINE &nbsp;<span id="clock"></span></div></header>
+<main id="start" class="start-grid">
+ <section class="profiles">
+  <button class="profile" data-profile="nurse"><span class="profile-name">01 / NURSE <span>＋</span></span><span class="profile-image"><img data-src="images/nurse.png" alt="간호사 프로필"><span class="placeholder">NURSE IMAGE</span></span><span class="profile-name">SUBJECT FILE / OPEN →</span></button>
+  <button class="profile" data-profile="girl"><span class="profile-name">02 / GIRL <span>＋</span></span><span class="profile-image"><img data-src="images/girl.png" alt="소녀 프로필"><span class="placeholder">GIRL IMAGE</span></span><span class="profile-name">SUBJECT FILE / OPEN →</span></button>
+ </section>
+ <section class="panel hero"><div class="cross">✚</div><div class="hero-small">EMERGENCY OBSERVATION PROTOCOL</div><div class="logo-area"><img data-src="images/logo.png" alt="VITAL SIGNS 로고"><div class="logo-fallback">VITAL<br>SIGNS</div></div><div class="subtitle">LIFE / DEATH / CHOICE</div><p class="hero-desc">생존은 언제나 구원일까요?</p><button class="btn start-btn" id="start-btn">▶ &nbsp; START</button><div class="hint">CLICK TO INITIALIZE SESSION</div></section>
+ <section class="panel"><p class="eyebrow">03 / PATIENT MONITOR</p><h2>LIVE SIGNAL</h2><div class="monitor"><svg viewBox="0 0 300 130" preserveAspectRatio="none" aria-label="그려지는 심전도"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" class="gridline" fill="none"/></pattern></defs><rect width="300" height="130" fill="url(#grid)"/><path class="trace" d="M0 67 H45 L55 63 L65 67 H88 L99 78 L111 12 L124 110 L136 67 H172 L182 62 L192 67 H216 L227 78 L239 12 L252 110 L264 67 H300"/></svg></div><div class="vitals"><div><small>HEART RATE</small><div class="number"><span id="bpm">72</span><span style="font-size:12px"> BPM</span></div></div><small>ECG / LEAD II</small></div><div class="divider"></div><div class="record"><span>CONDITION</span><strong>UNSTABLE</strong></div><div class="record"><span>PROTOCOL</span><strong>AWAITING INPUT</strong></div><div class="warning">△ WARNING<br>SUBJECT DATA INCOMPLETE<br>MANUAL DECISION REQUIRED</div><button class="btn archive-link" id="archive-btn">ENDING ARCHIVE ↗</button></section>
+</main>
+<section id="intro" class="screen intro hidden"><img class="intro-bg" id="intro-bg" alt=""><div class="intro-content"><div class="eyebrow" id="intro-count"></div><h1 id="intro-title"></h1><p id="intro-description"></p><div class="intro-nav"><button class="btn arrow" id="intro-prev" aria-label="이전">←</button><button class="btn arrow" id="intro-next" aria-label="다음">→</button></div></div><div class="intro-art-hint" id="intro-hint"></div></section>
+<button id="global-home" class="btn home-btn hidden" aria-label="홈으로 돌아가기" title="홈으로 돌아가기">⌂</button>
+<section id="choice" class="screen choice-screen hidden"><div class="eyebrow" id="choice-label"></div><h1 id="choice-question"></h1><div class="choice-buttons"><button class="btn" id="choice-left"></button><button class="btn" id="choice-right"></button></div></section>
+<section id="ending" class="screen ending-screen hidden">
+ <div class="ending-heading"><span class="ending-pov" id="ending-pov">ZOMBIE’S POV</span><div class="ending-logo"><img data-src="images/logo.png" alt="VITAL SIGNS 로고"><span class="ending-logo-fallback">VITAL SIGNS</span></div><span class="ending-branch" id="ending-branch">FIRST BRANCH</span></div>
+ <div class="ending-title-area"><div class="eyebrow" id="ending-label"></div><h1 id="ending-title"></h1><div class="ending-english" id="ending-english"></div></div>
+ <div class="actions ending-actions"><button class="btn" id="ending-home">홈 화면으로 돌아가기</button><button class="btn" id="ending-back">이전 분기점으로 돌아가기</button></div>
+ </section>
+<section id="archive" class="screen archive-screen hidden"><div class="eyebrow">ENDING ARCHIVE / RECORDS</div><h1>ENDING ARCHIVE</h1><div class="archive-items" id="archive-items"></div><button class="btn" id="archive-home">← TITLE</button></section>
+<footer class="footer"><span>VITAL SIGNS © 2026</span><span>INTERACTIVE NARRATIVE / TERMINAL 01</span><span>STATUS: <span id="footer-status">STANDBY</span></span></footer>
+</div>
+<section id="video-screen" class="video-screen hidden"><video id="player" playsinline preload="auto"></video><div class="video-empty hidden" id="video-empty">VIDEO FILE NOT FOUND</div><div class="video-ui top"><div class="brand">✚ &nbsp; V/S MEDICAL SYSTEM</div><button class="btn home-btn" id="video-home" title="타이틀로 돌아가기" aria-label="타이틀로 돌아가기">⌂</button></div><div class="video-ui bottom"><span class="eyebrow">VITAL SIGNS / OBSERVATION</span><span class="eyebrow">SYSTEM ACTIVE</span></div><div class="video-controls" id="video-controls"><button class="btn icon-control" id="pause-play" aria-label="일시정지" title="일시정지"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="pause-icon" d="M7 5v14M17 5v14"/></svg></button><button class="btn icon-control" id="jump-end" aria-label="영상 끝으로 이동" title="영상 끝으로 이동"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5l9 7-9 7zM15 5v14"/></svg></button></div><div class="video-fallback hidden" id="video-fallback"><p>영상 파일이 아직 없거나 재생할 수 없습니다.</p><button class="btn" id="skip-video">다음 화면 테스트 →</button></div></section>
+<div class="modal hidden" id="profile-modal"><div class="panel modal-box"><button class="btn modal-close" id="modal-close" aria-label="닫기">×</button><div class="eyebrow">SUBJECT RECORD</div><h2 id="modal-title"></h2><p id="modal-text"></p></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const screens=['start','intro','choice','ending','archive'];
+const intros=[
+ {label:'01 / 03 — WORLD',title:'살아남은 세계,\n눈을 뜬 한 사람',text:'좀비 사태 이후, 폐허가 된 병원.\n약에 의지하여 좀비화를 억누르는 환자들 사이에서 한 소녀가 깨어납니다.',image:'images/world.png'},
+ {label:'02 / 03 — CHARACTERS',title:'살리고 싶은 자와\n좀비가 되고 싶은 자',text:'좀비가 되어서도 환자를 돌보는 간호사.\n그리고 더 이상 살아가고 싶지 않은 소녀.\n두 존재의 욕망은 서로 엇갈립니다.',image:'images/characters.png'},
+ {label:'03 / 03 — YOUR ROLE',title:'당신의 선택이\n운명을 바꿉니다',text:'이야기의 결정적인 순간에 선택지가 나타납니다.\n선택에 따라 세 가지 서로 다른 엔딩을 만나게 됩니다.',image:'images/howtoplay.png'}
+];
+const endingTitles={a:'아무도 없는 안식처',b:'살아있는 자들의 귀환',c:'병동의 영원한 파수꾼'};
+const endingNumbers={a:'01',b:'02',c:'03'};
+const videoFiles={A:'intro.mp4',B:'middle.mp4',a:'ending1.mp4',b:'ending2.mp4',c:'ending3.mp4'};
+const endingEnglish={a:'Sanctuary of No One',b:'Return of the Living',c:'The Eternal Sentinel of the Ward'};
+let introIndex=0,choiceIndex=1,activeVideo='',bpm=72;
+function show(id){$('choice').classList.remove('over-video');screens.forEach(s=>$(s).classList.toggle('hidden',s!==id));$('video-screen').classList.add('hidden');$('player').pause();$('player').removeAttribute('src');$('player').load();$('footer-status').textContent=id==='start'?'STANDBY':'ACTIVE';$('global-home').classList.toggle('hidden',id==='start');$('video-controls').classList.add('hidden')}
+function home(){show('start')}
+function loadOptionalImage(img){const path=img.dataset.src;img.hidden=true;const probe=new Image();probe.onload=()=>{img.src=path;img.hidden=false;if(img.closest('.logo-area')||img.closest('.ending-logo'))img.nextElementSibling.hidden=true};probe.onerror=()=>{img.hidden=true};probe.src=path}
+document.querySelectorAll('img[data-src]').forEach(loadOptionalImage);
+function intro(i){introIndex=i;const x=intros[i];$('intro-count').textContent=x.label;$('intro-title').textContent=x.title;$('intro-description').textContent=x.text;$('intro-hint').textContent='';$('intro-bg').style.display='none';const probe=new Image();probe.onload=()=>{$('intro-bg').src=x.image;$('intro-bg').style.display='block'};probe.onerror=()=>{$('intro-hint').textContent='BACKGROUND IMAGE / '+x.image};probe.src=x.image;show('intro');$('global-home').classList.add('hidden');}
+$('start-btn').onclick=()=>intro(0);
+$('intro-prev').onclick=()=>introIndex===0?home():intro(introIndex-1);
+$('intro-next').onclick=()=>introIndex===2?play('A'):intro(introIndex+1);
+function play(key){$('choice').classList.remove('over-video');activeVideo=key;screens.forEach(s=>$(s).classList.add('hidden'));$('video-screen').classList.remove('hidden');$('global-home').classList.add('hidden');$('video-controls').classList.remove('hidden');setPauseIcon(false);$('video-fallback').classList.add('hidden');$('video-empty').classList.add('hidden');const v=$('player');v.src='videos/'+videoFiles[key];v.load();v.play().catch(()=>{$('video-empty').classList.remove('hidden');$('video-fallback').classList.remove('hidden');$('video-controls').classList.add('hidden')})}
+function videoDone(){$('video-controls').classList.add('hidden');$('player').pause();if(activeVideo==='A')choice(1);else if(activeVideo==='B')choice(2);else ending(activeVideo)}
+$('player').addEventListener('ended',videoDone);
+$('player').addEventListener('error',()=>{$('video-empty').classList.remove('hidden');$('video-fallback').classList.remove('hidden');$('video-controls').classList.add('hidden')});
+$('skip-video').onclick=videoDone;
+$('video-home').onclick=home;$('global-home').onclick=home;
+function setPauseIcon(paused){$('pause-icon').setAttribute('d',paused?'M8 5l11 7-11 7z':'M7 5v14M17 5v14');$('pause-play').setAttribute('aria-label',paused?'재생':'일시정지');$('pause-play').title=paused?'재생':'일시정지'}
+$('pause-play').onclick=()=>{const v=$('player');if(v.paused){v.play().catch(()=>{});setPauseIcon(false)}else{v.pause();setPauseIcon(true)}};
+$('jump-end').onclick=()=>{const v=$('player');if(Number.isFinite(v.duration)&&v.duration>0){try{v.currentTime=Math.max(0,v.duration-0.04)}catch(e){}}videoDone()};
+$('player').addEventListener('play',()=>setPauseIcon(false));$('player').addEventListener('pause',()=>setPauseIcon(true));
+function choice(n){choiceIndex=n;const keepFrame=(activeVideo==='A'||activeVideo==='B')&&!$('video-screen').classList.contains('hidden')&&$('video-empty').classList.contains('hidden'); if(keepFrame){$('choice').classList.remove('hidden');$('choice').classList.add('over-video');$('video-fallback').classList.add('hidden');$('video-controls').classList.add('hidden');$('global-home').classList.add('hidden')}else{show('choice')};$('choice-label').textContent='DECISION POINT / 0'+n;if(n===1){$('choice-question').textContent='“나를 좀비로 만들어줘”';$('choice-left').textContent='부탁을 들어준다';$('choice-right').textContent='들어주지 않는다'}else{$('choice-question').textContent='“도와주지 않는다면 직접 좀비가 되면 돼”';$('choice-left').textContent='혼자 떠난다';$('choice-right').textContent='모두를 데려간다'}}
+$('choice-left').onclick=()=>choiceIndex===1?play('a'):play('b');
+$('choice-right').onclick=()=>choiceIndex===1?play('B'):play('c');
+function ending(key){show('ending');$('global-home').classList.add('hidden');$('ending-label').textContent='ENDING '+endingNumbers[key];$('ending-title').textContent=endingTitles[key];$('ending-english').textContent=endingEnglish[key];$('ending-branch').textContent=key==='a'?'FIRST BRANCH':'SECOND BRANCH';try{localStorage.setItem('vital-ending-'+key,'1')}catch(e){}$('ending-back').onclick=()=>choice(key==='a'?1:2)}
+$('ending-home').onclick=home;
+$('archive-btn').onclick=archive;
+$('archive-home').onclick=home;
+function archive(){show('archive');$('archive-items').innerHTML='';Object.keys(endingTitles).forEach(key=>{let unlocked=false;try{unlocked=localStorage.getItem('vital-ending-'+key)==='1'}catch(e){}const card=document.createElement('div');card.className='panel archive-item';const label=document.createElement('div');label.className='eyebrow';label.textContent='ENDING '+endingNumbers[key];const title=document.createElement('h2');title.textContent=unlocked?endingTitles[key]:'LOCKED';const action=document.createElement('button');action.className='btn';action.textContent=unlocked?'다시 보기 →':'미해금';action.disabled=!unlocked;if(unlocked)action.onclick=()=>play(key);card.append(label,title,action);$('archive-items').appendChild(card)})}
+const profileCopy={nurse:['THE NURSE','그녀는 언제나 환자를 최우선으로 생각했다. 나이팅게일의 화신이라\n칭송받기도 했지만, 동료들에게는 자신을 소모할 만큼 환자에게\n집착한다는 평가를 받았다.\n\n좀비가 된 후 자아가 크게 손상되었음에도 환자를 돌보는 행동만은\n남아 있다. 이는 의식적인 판단이 아닌, 몸에 밴 습관적 반응에 가깝다.'],girl:['THE GIRL','소녀는 언제부터인가 삶에 대한 기대를 잃어버렸다. 특별한 불행이 있었던 것은 아니다. 그저 반복되는 하루 속에서 무엇을 위해 살아가야 하는지 알 수 없게 되었을 뿐이다.\n\n좀비 사태 이후, 소녀에게 남은 것은 텅 빈 병실과 창밖에서 들려오는\n좀비들의 울음소리뿐이다. 가족과 친구들의 행방도 모르는 채, 매일 생존을 위해 애써야 하는 현실은 끝없는 피로일 뿐이다.\n\n소녀는 더 이상 살아남기 위해 노력하고 싶지 않다. 좀비가 된다는 것은\n생존으로부터의 해방일지도 모른다.']};
+document.querySelectorAll('[data-profile]').forEach(el=>el.onclick=()=>{const p=profileCopy[el.dataset.profile];$('modal-title').textContent=p[0];$('modal-text').textContent=p[1];$('profile-modal').classList.remove('hidden')});
+$('modal-close').onclick=()=>$('profile-modal').classList.add('hidden');
+$('profile-modal').onclick=e=>{if(e.target===$('profile-modal'))$('profile-modal').classList.add('hidden')};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('profile-modal').classList.add('hidden')});
+function clock(){$('clock').textContent=new Date().toLocaleTimeString('en-GB',{hour12:false})}clock();setInterval(clock,1000);
+setInterval(()=>{const delta=Math.round((Math.random()-.5)*10);bpm=Math.min(83,Math.max(68,bpm+delta));$('bpm').textContent=bpm},1700);
+</script>
+</body></html>
